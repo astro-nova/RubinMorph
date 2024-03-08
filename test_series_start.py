@@ -2,6 +2,7 @@ import numpy as np
 from tqdm import tqdm
 import argparse
 import pickle
+import statmorph
 
 # Astropy
 from photutils.segmentation import detect_sources
