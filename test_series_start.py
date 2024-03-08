@@ -93,16 +93,16 @@ if __name__ == '__main__':
     # Generate random params
     N = int(args.N)
     gal_params = get_galaxy_rng_vals(N)
-    img_params = get_augmentation_rng_vals(N)
+    aug_params = get_augmentation_rng_vals(N)
     
     # Fix the parameters other than the one I want to vary
-    for p in img_params:
+    for p in aug_params:
         p['pxscale'] = perfect_pxscale
 
     ### Run the execution in parallel
     Parallel(n_jobs=num_cores)(delayed(single_galaxy_run)(
            filepath=f'{args.path}/{i}.pkl', gal_params=gal_params[i], 
-           img_params=img_params[i], perfect_pxscale=perfect_pxscale
+           aug_params=aug_params[i], perfect_pxscale=perfect_pxscale
     ) for i in tqdm(range(N), total=N) )
 
 
