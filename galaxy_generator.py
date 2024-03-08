@@ -570,13 +570,9 @@ def get_augmentation_rng_vals(N, lims=_default_aug_properties, seed=None):
 	sky_mags = rng.uniform(lims['sky_mag'][0], lims['sky_mag'][1], size=N)
 	pxscales = rng.uniform(lims['pxscale'][0], lims['pxscale'][1], size=N)
 
-	# PSF has to be at least 3 x pixel scale
-	psf_lower = pxscales*2
-	psfs = rng.uniform(psf_lower, lims['psf_fwhm'][1], size=N)
-
 	# Save all these values as output
 	output = {
-		'sky_mag' : sky_mags, 'psf_fwhm' : psfs, 'pxscale' : pxscales
+		'sky_mag' : sky_mags, 'pxscale' : pxscales
 	}
 
 	# Convert to a list of dicts, where each dict can be passed to `simulate_perfect_galaxy`
