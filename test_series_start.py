@@ -20,17 +20,47 @@ import multiprocessing
 num_cores = multiprocessing.cpu_count()
 
 
+
+
+
+
 def get_segmap(image):
     std = sigma_clipped_stats(image)[2]
     kernel = Gaussian2DKernel(5)
     img_smooth = convolve(image, kernel)
     segmap = detect_sources(img_smooth, std, 100)
-    return segmap
+
+    # Keep only the central region
+    areas = segmap.areas
+    maxlabel = np.argmax(areas)+1
+    s_arr = segmap.data
+    mask = (s_arr > 0) & (s_arr != maxlabel)
+    segmap.keep_label(maxlabel)
+    segmap.relabel_consecutive()
+
+    return segmap, mask
 
 def get_weightmap(image):
     std = sigma_clipped_stats(image)[2]
     noisemap = np.sqrt(image + std**2)
     return noisemap
+
+
+def get_sm_output(source_morph):
+    # Statmorph output we want to keep
+    sm_keys = [
+        'flag', 'flag_sersic',  'xc_centroid', 'yc_centroid', 'ellipticity_centroid', 'elongation_centroid', 
+        'orientation_centroid', '_sky_asymmetry', 'xc_asymmetry', 'yc_asymmetry', 'ellipticity_asymmetry', 
+        'elongation_asymmetry', 'orientation_asymmetry', 'rpetro_circ', 'flux_circ', 'rpetro_ellip', 'flux_ellip', 
+        'rmax_circ', 'rmax_ellip', 'rhalf_circ', 'rhalf_ellip', 'r20', 'r50', 'r80', 'gini', 'm20',
+        'gini_m20_bulge', 'gini_m20_merger', 'sn_per_pixel', 'concentration', 'asymmetry', 
+        'smoothness', 'multimode', 'intensity', 'deviation', 'outer_asymmetry', 'shape_asymmetry', 
+        'sersic_amplitude', 'sersic_rhalf', 'sersic_n', 'sersic_xc', 'sersic_yc', 
+        'sersic_ellip', 'sersic_theta', 'sersic_chi2_dof', 'sersic_bic']
+    
+    sm_vals = source_morph.__dict__
+    out_dict = {key: value for key, value in sm_vals.items() if key in sm_keys}
+    return out_dict
 
 
 def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
@@ -51,9 +81,11 @@ def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
 
     # Segmaps
     segmaps = []
+    masks = []
     for img in imgs:
-        segmap = get_segmap(img)
+        segmap, mask = get_segmap(img)
         segmaps.append(segmap)
+        masks.append(mask)
     
     # Weightmaps
     weightmaps = []
@@ -63,14 +95,14 @@ def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
     
     # Run statmorph
     morphs = []
-    for img, segmap, weight in zip(imgs, segmaps, weightmaps):
-        morph = statmorph.source_morphology(img, segmap, weightmap=weight, psf=psf)
+    for img, segmap, weight, mask in zip(imgs, segmaps, weightmaps, masks):
+        morph = statmorph.source_morphology(img, segmap, weightmap=weight, mask=mask, psf=psf)[0]
         morphs.append(morph)
 
     # Save the output
     outdict = {
-        'morph_base' : morphs[0],
-        'morph_obs' : morphs[1],
+        'morph_base' : get_sm_output(morphs[0]),
+        'morph_obs' : get_sm_output(morphs[1]),
         'gal_params' : gal_params,
         'aug_params' : aug_params,
         'perfect_pxscale' : perfect_pxscale
