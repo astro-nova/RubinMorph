@@ -644,8 +644,6 @@ def get_galaxy_rng_vals(
     n_clumps = rng.integers(lims['n_clumps'][0], lims['n_clumps'][1]+1, size=N)
     rs = -1.9 * mags + 35 + rng.normal(lims['reff_scatter'][0], lims['reff_scatter'][1], size=N)
 
-    # For high-sersic index cases, set q to 1
-    qs[b_t >= 0.5] = 1
     # Set lower and upper limits to the radius in arcseconds
     rs[rs < 1] = 1
     rs[rs > 20] = 20
@@ -656,6 +654,9 @@ def get_galaxy_rng_vals(
     n_disk = rng.uniform(lims['sersic_n'][0], 2.5, size=N)
     n_bulge = rng.uniform(2.5, lims['sersic_n'][1], size=N)
     rs2 = rng.uniform(0.1*rs, rs, size=N)
+
+    # # For high-sersic index cases, set q to 1
+    # qs[b_t >= 0.5] = 1
 
     # # Warping
     # tidal_likelihood = 0.1
