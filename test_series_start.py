@@ -157,8 +157,8 @@ if __name__ == '__main__':
     aug_params = get_augmentation_rng_vals(N)
     
     # Fix the parameters other than the one I want to vary
-    for p in aug_params:
-        p['pxscale'] = perfect_pxscale
+    # for p in aug_params:
+    #     p['pxscale'] = perfect_pxscale
 #         p['sky_mag'] = 30
 
     ### Run the execution in parallel
