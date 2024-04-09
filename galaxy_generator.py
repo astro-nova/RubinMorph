@@ -538,7 +538,7 @@ def add_source_to_image(field, galaxy, clumps, all_xi, all_yi,
 
     return image_psf
 
-def simulate_perfect_galaxy(mag, r_eff, pxscale, fov_reff=10, q=1, beta=0, n_clumps=10, 
+def simulate_perfect_galaxy(mag, r_eff, pxscale, fov_reff=15, q=1, beta=0, n_clumps=10, 
                             n_disk=1, n_bulge=4, b_t=0.3, warp_strength=0, r_second=1,
                             prob_comp=0, comp_properties=None,
                             clump_properties=None, **kwargs):
