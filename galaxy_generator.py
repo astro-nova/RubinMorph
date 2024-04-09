@@ -644,6 +644,13 @@ def get_galaxy_rng_vals(
     n_clumps = rng.integers(lims['n_clumps'][0], lims['n_clumps'][1]+1, size=N)
     rs = -1.9 * mags + 35 + rng.normal(lims['reff_scatter'][0], lims['reff_scatter'][1], size=N)
 
+    # For high-sersic index cases, set q to 1
+    qs[b_t >= 0.5] = 1
+    # Set lower and upper limits to the radius in arcseconds
+    rs[rs < 1] = 1
+    rs[rs > 20] = 20
+
+
     # Two-sersic model
     b_t = rng.uniform(0, 1, size=N)
     n_disk = rng.uniform(lims['sersic_n'][0], 2.5, size=N)
@@ -686,13 +693,6 @@ def get_galaxy_rng_vals(
     comp_properties['q'] = rng.uniform(comp_props['q'][0], comp_props['q'][1], size=N) 
     comp_properties['beta'] = rng.uniform(0, 2*np.pi, size=N)   
     comp_properties = pd.DataFrame(comp_properties).to_dict(orient="records")
-
-    # For high-sersic index cases, set q to 1
-    qs[b_t >= 0.5] = 1
-
-    # Set lower and upper limits to the radius in arcseconds
-    rs[rs < 1] = 1
-    rs[rs > 20] = 20
 
     # Save all these values as output
     output = {
