@@ -53,7 +53,7 @@ companion_threshold = 0.3
 _default_companion_properties = {
     'r' : (0.7, 1.5),
     'n' : (1, 3),
-    'q' : (0, 1),
+    'q' : (0.1, 1),
     'r_frac' : (0.2, 0.5),
     'flux_frac' : (0.3, 0.7)
 }
