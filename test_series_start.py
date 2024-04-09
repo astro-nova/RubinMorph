@@ -59,7 +59,11 @@ def get_sm_output(source_morph):
         'gini_m20_bulge', 'gini_m20_merger', 'sn_per_pixel', 'concentration', 'asymmetry', 
         'smoothness', 'multimode', 'intensity', 'deviation', 'outer_asymmetry', 'shape_asymmetry', 
         'sersic_amplitude', 'sersic_rhalf', 'sersic_n', 'sersic_xc', 'sersic_yc', 
-        'sersic_ellip', 'sersic_theta', 'sersic_chi2_dof', 'sersic_bic']
+        'sersic_ellip', 'sersic_theta', 'sersic_chi2_dof', 'sersic_bic',
+        'doublesersic_xc', 'doublesersic_yc','doublesersic_amplitude1','doublesersic_rhalf1',
+        'doublesersic_n1','doublesersic_ellip1','doublesersic_theta1','doublesersic_amplitude2',
+        'doublesersic_rhalf2','doublesersic_n2','doublesersic_ellip2','doublesersic_theta2',
+        'doublesersic_chi2_dof','doublesersic_aic','doublesersic_bic']
     
     sm_vals = source_morph.__dict__
     out_dict = {key: value for key, value in sm_vals.items() if key in sm_keys}
