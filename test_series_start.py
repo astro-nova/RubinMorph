@@ -99,7 +99,8 @@ def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
     # Run statmorph
     morphs = []
     for img, segmap, weight, mask in zip(imgs, segmaps, weightmaps, masks):
-        morph = statmorph.source_morphology(img, segmap, weightmap=weight, mask=mask, psf=psf)[0]
+        morph = statmorph.source_morphology(img, segmap, weightmap=weight, 
+                                            mask=mask, psf=psf, include_doublesersic=True)[0]
         morphs.append(morph)
 
 
