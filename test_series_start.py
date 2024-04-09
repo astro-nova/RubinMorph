@@ -131,6 +131,7 @@ if __name__ == '__main__':
     # Fix the parameters other than the one I want to vary
     for p in aug_params:
         p['pxscale'] = perfect_pxscale
+#         p['sky_mag'] = 30
 
     ### Run the execution in parallel
     Parallel(n_jobs=num_cores)(delayed(single_galaxy_run)(
