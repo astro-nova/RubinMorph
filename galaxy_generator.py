@@ -599,6 +599,9 @@ def simulate_perfect_galaxy(mag, r_eff, pxscale, fov_reff=15, q=1, beta=0, n_clu
         'clumps' : clumps,
         'all_xi' : all_xi,
         'all_yi' : all_yi,
+        'comp' : comp,
+        'comp_x' : comp_x,
+        'comp_y' : comp_y
     }
 
     # NOTE RETURNING RPET IN ARCSEC
