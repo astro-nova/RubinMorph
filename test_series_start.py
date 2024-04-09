@@ -15,6 +15,9 @@ from galaxy_generator import (
     simulate_perfect_galaxy, add_source_to_image, sky_noise
 )
 
+# New morphology functions
+import morph_functions as new_morph
+
 from joblib import Parallel, delayed
 import multiprocessing
 num_cores = multiprocessing.cpu_count()
@@ -99,14 +102,38 @@ def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
         morph = statmorph.source_morphology(img, segmap, weightmap=weight, mask=mask, psf=psf)[0]
         morphs.append(morph)
 
+
+    ####### Shape asymmetry add-on
+    # Avg SB
+    pxscales = [perfect_pxscale, aug_params['pxscale']]
+    ashape_dicts = [{}, {}] # Base, obs
+    for i, img in enumerate(imgs):
+        cent = morphs[i].xc_asymmetry, morphs[i].yc_asymmetry
+        rpet = morphs[i].rpetro_circ
+
+        # Shape asymmetry at 1.5Rp average SB
+        sb_avg = new_morph.get_avgsb(img, cent, rpet*pxscales[i], pxscales[i]) 
+        ashape_avg = new_morph.shape_asymmetry(img, cent, pxscales[i], sb_avg, masks[i])
+        ashape_dicts[i][f'avg_sb'] = sb_avg 
+        ashape_dicts[i][f'ashape_avg'] = ashape_avg
+
+        sb_lims = np.arange(20,28)
+        for lim in sb_lims:
+            ashape = new_morph.shape_asymmetry(img, cent, pxscales[i], lim, masks[i])
+            ashape_dicts[i][f'ashape_{lim}'] = ashape
+    
+
     # Save the output
     outdict = {
         'morph_base' : get_sm_output(morphs[0]),
         'morph_obs' : get_sm_output(morphs[1]),
+        'ashape_base' : ashape_dicts[0],
+        'ashape_obs' : ashape_dicts[1],
         'gal_params' : gal_params,
         'aug_params' : aug_params,
         'perfect_pxscale' : perfect_pxscale
     }
+
     with open(filepath, 'wb') as f:
         pickle.dump(outdict, f)
     
