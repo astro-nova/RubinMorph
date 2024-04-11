@@ -106,7 +106,20 @@ def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
         morph = statmorph.source_morphology(img, segmap, weightmap=weight, 
                                             mask=mask, psf=psf, include_doublesersic=True,
                                             doublesersic_model_args = {
-                                                'n_1': 4, 'n_2': 1, 'fixed': {'n_1': True, 'n_2': True}}
+                                                'bounds' : {
+                                                    'n_1' : (3, 6),
+                                                    'n_2' : (0.01, 2),
+                                                    'amplitude_1' : (0, None),
+                                                    'amplitude_2' : (0, None),
+                                                },
+                                                'ellip_1' : 1,
+                                                'n_1' : 4,
+                                                'n_2' : 1,
+                                                'fixed' : {
+                                                    'ellip_1' : True,
+                                                    'theta_1' : True,
+                                                }
+                                            }
                                             )[0]
         morphs.append(morph)
 
