@@ -112,7 +112,7 @@ def single_galaxy_run(filepath, gal_params, aug_params, perfect_pxscale):
                                                     'amplitude_1' : (0, None),
                                                     'amplitude_2' : (0, None),
                                                 },
-                                                'ellip_1' : 1,
+                                                'ellip_1' : 0,
                                                 'n_1' : 4,
                                                 'n_2' : 1,
                                                 'fixed' : {
